@@ -1,3 +1,5 @@
+
+// the query graphQL get all the data necessary to display a page intra for the connected user 
 export const query = `
 {
     user (order_by: { login: asc }) {
