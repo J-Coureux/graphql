@@ -10,6 +10,10 @@ import { getLvl } from "./Getter/getLvl.js"
 import { getExp } from "./Getter/getEXP.js"
 import { getCurrentExercice } from "./Getter/getExercise.js"
 import { getLastExerciceStarted } from "./Getter/getExercise.js"
+import { getAllProjectSorted  } from "./Getter/getAllProjectSorted.js"
+import { createClassementSVG } from "./Graph/createClassementSVG.js"
+import { createXPsvg } from "./Graph/createXPsvg.js"
+import { GetTalentLvl } from "./Getter/getTalentLvl.js"
 
 
 export const Logged = async(JWT) => {
@@ -50,10 +54,10 @@ export const Logged = async(JWT) => {
             <div class="gitea" id="gitea">GITEA</div>
 
             <div class="profile"></div>
-            <div class="userName"></div>
+            <div class="userName">${data.data.user[0].login}</div>
             <div class="logout" id="logout"></div>
         </div>
-        
+
         <div class="body">
             <div class="hello">Welcome, ${data.data.user[0].attrs.firstName} ${data.data.user[0].attrs.lastName}!</div>
             <div class="allData" id="allData">
@@ -84,10 +88,6 @@ export const Logged = async(JWT) => {
                 </div>
             </div>
 
-            <div class="activity">
-                <p class="currentlySpan">You're currently</p>
-            </div>
-
             <div class="divRatio">
                 <div class="ratioSpan">Audits ratio</div>
 
@@ -101,7 +101,7 @@ export const Logged = async(JWT) => {
             </div>
 
             <div class="xp">
-                <div class="xpAmount"><span style="color: #CAADFF"></span> </div>
+                <div class="xpAmount">${EXPamount}<span style="color: #CAADFF"></span> </div>
                 <div class="lastActivitySpan">Last activity</div>
                 <div class="line"></div>
                 <div class="fourExercices"></div>
@@ -114,7 +114,7 @@ export const Logged = async(JWT) => {
 
             <div class="XPprogression">
                 <div class="title">XP progression</div>
-                <div class="totalXP">Total <br> </div>
+                <div class="totalXP">Total <br> ${getXpNextLvl(EXPamount, 2)}</div>
                 <div class="svg" id="XPsvg"></div>
             </div>
 
@@ -146,5 +146,7 @@ export const Logged = async(JWT) => {
         barRatioDone.style.width = `${auditRatioDone*100/auditRatioReceived / 2}`
     }
 
+    createXPsvg(getAllProjectSorted(data.data.transaction), EXPamount)
+    createClassementSVG(GetTalentLvl(data.data.event_user), lvl)
     CreateEventListener(data);
 }

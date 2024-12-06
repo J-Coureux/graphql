@@ -21,3 +21,12 @@ export const checkPath = (data) => {
     // If none of the above conditions are met, consider the path as valid
     return true;
 }
+
+
+export const checkPaht2 = (path) => {
+    const arr = path.split('/')[path.split('/').length-1]
+    if (arr === "div-01") {
+        return true
+    }
+    return false
+}

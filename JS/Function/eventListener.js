@@ -10,8 +10,4 @@ export const CreateEventListener = (data) => {
     document.getElementById('giteaSVG').addEventListener('click', () => {
         window.open(`https://zone01normandie.org/git/${data.data.user[0].login}`)
     })
-
-    document.getElementById('allData').addEventListener('click', () => {
-        AllDataClick(data)
-    })
 }
