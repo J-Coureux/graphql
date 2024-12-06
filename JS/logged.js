@@ -3,7 +3,6 @@ import { rank } from "./Const/ranks.js"
 import { auditComments } from "./Const/auditComment.js"
 import { updCSS } from "./Function/updCSS.js"
 import { f } from "./Function/f.js"
-import { CreateEventListener } from "./Function/eventListener.js"
 import { fetcheDatasUser } from "./Getter/FetchData.js"
 import { getXpNextLvl } from "./Getter/getXpNextLvl.js"
 import { getLvl } from "./Getter/getLvl.js"
@@ -15,13 +14,10 @@ import { createClassementSVG } from "./Graph/createClassementSVG.js"
 import { createXPsvg } from "./Graph/createXPsvg.js"
 import { GetTalentLvl } from "./Getter/getTalentLvl.js"
 
-
 export const Logged = async(JWT) => {
     updCSS(['CSS/logged.css']);
 
     const data = await fetcheDatasUser('https://zone01normandie.org/api/graphql-engine/v1/graphql', `Bearer ${JWT}`, query)
-
-    const currentDate = new Date();
 
     //const audit
     const auditRatio = data.data.user[0].auditRatio
@@ -32,12 +28,14 @@ export const Logged = async(JWT) => {
 
     //const lvl & rank
     const lvl = getLvl(data.data.transaction);
-    const currentRank = rank[Math.floor(lvl/10) < 6 ? Math.floor(lvl/10) : 6]
-    const nextRank = 10 - (lvl % 10)
     const nextLevel = f(lvl+1) - EXPamount > 0 ? f(lvl+1) - EXPamount : 0
     const nextLevelRounded = getXpNextLvl(nextLevel, 1)
+    const currentRank = rank[Math.floor(lvl/10) < 6 ? Math.floor(lvl/10) : 6]
+    const nextRank = 10 - (lvl % 10)
+
     const currentExercise = getCurrentExercice(data.data.result)
     const lastExercise = currentExercise ? currentExercise : getLastExerciceStarted(data.data.result)
+
     console.log(currentExercise)
     console.log(lastExercise.object.name)
     document.body.innerHTML = `
@@ -61,9 +59,6 @@ export const Logged = async(JWT) => {
         <div class="body">
             <div class="hello">Welcome, ${data.data.user[0].attrs.firstName} ${data.data.user[0].attrs.lastName}!</div>
             <div class="allData" id="allData">
-                <div class="reverse">
-                    <div></div>
-                </div>
             </div>
 
             <div class="container_current_rank">
@@ -148,5 +143,16 @@ export const Logged = async(JWT) => {
 
     createXPsvg(getAllProjectSorted(data.data.transaction), EXPamount)
     createClassementSVG(GetTalentLvl(data.data.event_user), lvl)
-    CreateEventListener(data);
+
+    document.getElementById('logout').addEventListener('click', () => {
+        location.reload()
+    })
+
+    document.getElementById('gitea').addEventListener('click', () => {
+        window.open(`https://zone01normandie.org/git/${data.data.user[0].login}`)
+    })
+
+    document.getElementById('giteaSVG').addEventListener('click', () => {
+        window.open(`https://zone01normandie.org/git/${data.data.user[0].login}`)
+    })
 }
